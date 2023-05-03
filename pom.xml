@@ -80,40 +80,21 @@ under the License.
     <project.build.outputTimestamp>2023-05-03T00:54:05Z</project.build.outputTimestamp>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-annotations</artifactId>
-        <version>${maven.plugin.tools.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-
   <build>
     <pluginManagement>
       <plugins>
+        <!-- START SNIPPET: release-plugin-configuration -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.0</version>
+          <configuration>
+            <useReleaseProfile>false</useReleaseProfile>
+            <goals>deploy</goals>
+            <releaseProfiles>apache-release</releaseProfiles>
+          </configuration>
+        </plugin>
+        <!-- END SNIPPET: release-plugin-configuration -->
         <!-- set versions of common plugins for reproducibility, ordered alphabetically -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -226,18 +207,6 @@ under the License.
             </pluginManagementExcludes>
           </configuration>
         </plugin>
-        <!-- START SNIPPET: release-plugin-configuration -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>3.0.0</version>
-          <configuration>
-            <useReleaseProfile>false</useReleaseProfile>
-            <goals>deploy</goals>
-            <releaseProfiles>apache-release</releaseProfiles>
-          </configuration>
-        </plugin>
-        <!-- END SNIPPET: release-plugin-configuration -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
@@ -310,38 +279,6 @@ under the License.
               <resourceBundles>
                 <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
               </resourceBundles>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-maven-version</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>${minimalMavenBuildVersion}</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
-            <id>enforce-java-version</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <version>${minimalJavaBuildVersion}</version>
-                </requireJavaVersion>
-              </rules>
             </configuration>
           </execution>
         </executions>
@@ -430,34 +367,6 @@ under the License.
               </execution>
             </executions>
           </plugin>
-          <!-- calculate checksums of source release for Apache dist area -->
-          <plugin>
-            <groupId>net.nicoulaj.maven.plugins</groupId>
-            <artifactId>checksum-maven-plugin</artifactId>
-            <version>1.11</version>
-            <executions>
-              <execution>
-                <id>source-release-checksum</id>
-                <goals>
-                  <goal>artifacts</goal>
-                </goals>
-                <!-- execute prior to maven-gpg-plugin:sign due to https://github.com/nicoulaj/checksum-maven-plugin/issues/112 -->
-                <phase>post-integration-test</phase>
-                <configuration>
-                  <algorithms>
-                    <algorithm>SHA-512</algorithm>
-                  </algorithms>
-                  <!-- https://maven.apache.org/apache-resource-bundles/#source-release-assembly-descriptor -->
-                  <includeClassifiers>source-release</includeClassifiers>
-                  <excludeMainArtifact>true</excludeMainArtifact>
-                  <csvSummary>false</csvSummary>
-                  <!-- attach SHA-512 checksum as well to upload to Maven Staging Repo, 
-                       as this eases uploading from stage to dist and doesn't do harm in Maven Central -->
-                  <attachChecksums>true</attachChecksums>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <!-- We want to sign the artifact, the POM, and all attached artifacts (except for SHA-512 checksum) -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -475,45 +384,5 @@ under the License.
       </build>
     </profile>
     <!-- END SNIPPET: release-profile -->
-    <profile>
-      <id>only-eclipse</id>
-      <activation>
-        <property>
-          <name>m2e.version</name>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <!-- Disable execution of some plugins in m2e (https://www.eclipse.org/m2e/documentation/m2e-execution-not-covered.html) -->
-            <plugin>
-              <groupId>org.eclipse.m2e</groupId>
-              <artifactId>lifecycle-mapping</artifactId>
-              <version>1.0.0</version><!-- as this is an artificial artifact only use in a profile (https://bugs.eclipse.org/bugs/show_bug.cgi?id=367870#c18) -->
-              <configuration>
-                <lifecycleMappingMetadata>
-                  <pluginExecutions>
-                    <pluginExecution>
-                      <!-- no native m2e support yet (https://issues.apache.org/jira/browse/MRRESOURCES-85) -->
-                      <pluginExecutionFilter>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-remote-resources-plugin</artifactId>
-                        <versionRange>[0,1.8.0)</versionRange>
-                        <goals>
-                          <goal>process</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <ignore />
-                      </action>
-                    </pluginExecution>
-                  </pluginExecutions>
-                </lifecycleMappingMetadata>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
   </profiles>
 </project>
