@@ -24,7 +24,7 @@ under the License.
 
   <groupId>org.apache.maven.test</groupId>
   <artifactId>mrelease-1114</artifactId>
-  <version>31-SNAPSHOT</version>
+  <version>31</version>
   <packaging>pom</packaging>
 
   <name>Testing MRELEASE-1114</name>
@@ -45,7 +45,7 @@ under the License.
     <connection>scm:git:https://github.com/hboutemy/MRELEASE-1114.git</connection>
     <developerConnection>scm:git:https://github.com/hboutemy/MRELEASE-1114.git</developerConnection>
     <url>https://github.com/hboutemy/MRELEASE-1114/tree/${project.scm.tag}</url>
-    <tag>HEAD</tag>
+    <tag>mrelease-1114-31</tag>
   </scm>
 
   <distributionManagement>
@@ -77,7 +77,7 @@ under the License.
     <surefire.version>3.0.0</surefire.version><!-- for surefire, failsafe and surefire-report -->
     <maven.plugin.tools.version>3.8.2</maven.plugin.tools.version><!-- for m-plugin-p and maven-plugin-annotations -->
     <assembly.tarLongFileMode>posix</assembly.tarLongFileMode>
-    <project.build.outputTimestamp>2023-05-03T00:47:18Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-05-03T00:54:02Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
