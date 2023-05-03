@@ -43,6 +43,19 @@ to see the [MRELEASE-1114](https://issues.apache.org/jira/browse/MRELEASE-1114) 
 [INFO] [INFO] Finished at: 2023-05-03T02:47:31+02:00
 [INFO] [INFO] ------------------------------------------------------------------------
 [INFO] [ERROR] Failed to execute goal org.apache.maven.plugins:maven-gpg-plugin:3.0.1:sign (sign-release-artifacts) on project mrelease-1114: Exit code: 2 -> [Help 1]
+[INFO] [ERROR] 
+[INFO] [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[INFO] [ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[INFO] [ERROR] 
+[INFO] [ERROR] For more information about the errors and possible solutions, please read the following articles:
+[INFO] [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.622 s
+[INFO] Finished at: 2023-05-03T02:54:16+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-release-plugin:3.0.0:perform (default-cli) on project mrelease-1114: Maven execution failed, exit code: 1 -> [Help 1]
 ```
 
 To init the gpg agent, just run `mvn -Papache-release deploy` to have an interactive signing session.
